@@ -12,7 +12,7 @@ router.get('/global', function (req, res, next) {
     fetch("https://coingecko.p.rapidapi.com/global", {
         "method": "GET",
         "headers": {
-            "x-rapidapi-key": process.env.DEV_RAPID_API_KEY,
+            "x-rapidapi-key": process.env.RAPID_API_KEY,
             "x-rapidapi-host": "coingecko.p.rapidapi.com"
         }
     })
