@@ -1,15 +1,27 @@
 var express = require('express');
-var router = express.Router();
+var cors = require('cors');
 const fetch = require('node-fetch');
 
-router.get('/', function (req, res, next) {
-    //console.log(req);
-    res.send("coingecko");
-});
+var router = express.Router();
+router.use(cors());
 
-router.get('/global', function (req, res, next) {
-    console.log("headers: ", req.headers);
-    fetch("https://coingecko.p.rapidapi.com/global", {
+var corsOptions = {
+    // only allow specified domains to request data
+    //origin: [""], 
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+router.get('/', cors(), function (req, res, next) {
+    console.log("req.get(endpoint) : ", req.get("endpoint"));
+
+    if (!req.get("endpoint")) {
+        res.status(400);
+        res.send("invalid endpoint");
+        return;
+    }
+
+    let url = "https://coingecko.p.rapidapi.com" + req.get("endpoint");
+    fetch(url, {
         "method": "GET",
         "headers": {
             "x-rapidapi-key": process.env.RAPID_API_KEY,
@@ -20,9 +32,7 @@ router.get('/global', function (req, res, next) {
         .then(json => {
             res.json(json);
         })
-        .catch(err => {
-            console.error(err);
-        });
+        .catch(err => console.error(err));
 });
 
 module.exports = router;
